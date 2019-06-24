@@ -12,7 +12,6 @@ const PlayerCard = props => {
         <div className="player_card_name">
           <span>{props.name}</span>
           <span>{props.lastname}</span>
-          {/* Hello */}
         </div>
       </div>
     </div>
