@@ -19,6 +19,7 @@ firebase.initializeApp(firebaseConfig);
 // connect to db
 const firebaseDB = firebase.database();
 const firebaseMatches = firebaseDB.ref("matches");
+const firebasePromotions = firebaseDB.ref("promotions");
 
 // test connection
 // firebaseDB
@@ -28,4 +29,4 @@ const firebaseMatches = firebaseDB.ref("matches");
 //     console.log(snapshot.val());
 //   });
 
-export { firebase, firebaseMatches };
+export { firebase, firebaseMatches, firebasePromotions };
