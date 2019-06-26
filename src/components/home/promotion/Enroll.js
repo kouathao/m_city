@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Fade from "react-reveal/Fade";
 import FormField from "../../utils/formFields";
 import { validate } from "../../utils/misc";
+import { firebasePromotions } from "../../../firebase";
 
 class Enroll extends Component {
   state = {
@@ -49,7 +50,7 @@ class Enroll extends Component {
     });
   }
 
-  resetFormSuccess() {
+  resetFormSuccess(type) {
     const newFormData = {
       ...this.state.formData
     };
@@ -62,7 +63,7 @@ class Enroll extends Component {
     this.setState({
       formError: false,
       formData: newFormData,
-      formSuccess: "Success"
+      formSuccess: type ? "Success" : "Email already exist"
     });
     this.clearSuccessMessage();
   }
@@ -87,8 +88,18 @@ class Enroll extends Component {
     }
 
     if (formIsValid) {
-      console.log(dataToSubmit);
-      this.resetFormSuccess();
+      firebasePromotions
+        .orderByChild("email")
+        .equalTo(dataToSubmit.email)
+        .once("value")
+        .then(snapshot => {
+          if (snapshot.val() === null) {
+            firebasePromotions.push(dataToSubmit);
+            this.resetFormSuccess(true);
+          } else {
+            this.resetFormSuccess(false);
+          }
+        });
     } else {
       this.setState({
         formError: true
@@ -116,6 +127,7 @@ class Enroll extends Component {
               ) : null}
               <div className="success_label">{this.state.formSuccess}</div>
               <button onClick={e => this.submitForm(e)}>Enroll</button>
+              <div className="enroll_discl">Disclaimer</div>
             </div>
           </form>
         </div>
