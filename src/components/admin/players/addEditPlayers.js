@@ -4,6 +4,8 @@ import AdminLayout from "../../../Hoc/AdminLayout";
 import FormField from "../../utils/formFields";
 import { validate } from "../../utils/misc";
 
+import FileUploader from "../../utils/fileUploader";
+
 import { firebasePlayers, firebaseDB, firebase } from "../../../firebase";
 
 class AddEditPlayers extends Component {
@@ -79,6 +81,14 @@ class AddEditPlayers extends Component {
         valid: false,
         validationMessage: "",
         showLabel: true
+      },
+      image: {
+        element: "image",
+        value: "",
+        validation: {
+          required: true
+        },
+        valid: true
       }
     }
   };
@@ -122,6 +132,7 @@ class AddEditPlayers extends Component {
     e.preventDefault();
 
     let dataToSubmit = {};
+    console.log(dataToSubmit);
     let formIsValid = true;
 
     for (let key in this.state.formData) {
@@ -130,21 +141,56 @@ class AddEditPlayers extends Component {
     }
 
     if (formIsValid) {
-      //TODO:
+      if (this.state.formType === "Edit Players") {
+        firebaseDB
+          .ref(`players/${this.state.playerId}`)
+          .update(dataToSubmit)
+          .then(() => {
+            this.successForm("Updated corretly");
+          })
+          .catch(e => {
+            this.setState({ formError: true });
+          });
+      } else {
+        firebasePlayers
+          .push(dataToSubmit)
+          .then(() => {
+            this.props.history.push("/admin_players");
+          })
+          .catch(e => {
+            this.setState({ formError: true });
+          });
+      }
     } else {
       this.setState({
         formError: true
       });
     }
   }
+  resetImage = () => {};
+  storeFilename = () => {};
   render() {
-    const { formType, formData, formSuccess, formError } = this.state;
+    const {
+      formType,
+      formData,
+      formSuccess,
+      formError,
+      defaultImg
+    } = this.state;
     return (
       <AdminLayout>
         <div className="editplayers_dialog_wrapper">
           <h2>{formType}</h2>
           <div>
             <form onSubmit={e => this.submitForm(e)}>
+              <FileUploader
+                dir="players"
+                tag={"Player image"}
+                defaultImg={defaultImg}
+                defaultImgName={formData.image.value}
+                resetImage={() => this.resetImage()}
+                filename={filename => this.storeFilename(filename)}
+              />
               <FormField
                 id={"name"}
                 formData={formData.name}
