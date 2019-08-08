@@ -88,7 +88,7 @@ class AddEditPlayers extends Component {
         validation: {
           required: true
         },
-        valid: true
+        valid: false
       }
     }
   };
@@ -105,7 +105,7 @@ class AddEditPlayers extends Component {
     }
   }
 
-  updateForm(element) {
+  updateForm(element, content = "") {
     const newFormData = {
       ...this.state.formData
     };
@@ -113,7 +113,11 @@ class AddEditPlayers extends Component {
       ...newFormData[element.id]
     };
 
-    newElement.value = element.e.target.value;
+    if (content === "") {
+      newElement.value = element.e.target.value;
+    } else {
+      newElement.value = content;
+    }
 
     let valiData = validate(newElement);
 
@@ -141,7 +145,7 @@ class AddEditPlayers extends Component {
     }
 
     if (formIsValid) {
-      if (this.state.formType === "Edit Players") {
+      if (this.state.formType === "Edit Player") {
         firebaseDB
           .ref(`players/${this.state.playerId}`)
           .update(dataToSubmit)
@@ -167,8 +171,18 @@ class AddEditPlayers extends Component {
       });
     }
   }
-  resetImage = () => {};
-  storeFilename = () => {};
+  resetImage = () => {
+    const newFormData = { ...this.state.formData };
+    newFormData["image"].value = "";
+    newFormData["image"].valid = false;
+    this.setState({
+      defaultImg: "",
+      formData: newFormData
+    });
+  };
+  storeFilename = filename => {
+    this.updateForm({ id: "image" }, filename);
+  };
   render() {
     const {
       formType,
