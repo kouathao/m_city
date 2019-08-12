@@ -8,7 +8,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { CircularProgress } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { firebasePlayers } from "../../../firebase";
 import { firebaseLooper, reverseArray } from "../../utils/misc";
@@ -29,8 +29,8 @@ class AdminPlayers extends Component {
       });
     });
   }
+
   render() {
-    const {} = this.state;
     return (
       <AdminLayout>
         <div>
@@ -38,8 +38,8 @@ class AdminPlayers extends Component {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>First Name</TableCell>
-                  <TableCell>Last Name</TableCell>
+                  <TableCell>First name</TableCell>
+                  <TableCell>Last name</TableCell>
                   <TableCell>Number</TableCell>
                   <TableCell>Position</TableCell>
                 </TableRow>
@@ -66,7 +66,6 @@ class AdminPlayers extends Component {
               </TableBody>
             </Table>
           </Paper>
-
           <div className="admin_progress">
             {this.state.isloading ? (
               <CircularProgress thickness={7} style={{ color: "#98c5e9" }} />
